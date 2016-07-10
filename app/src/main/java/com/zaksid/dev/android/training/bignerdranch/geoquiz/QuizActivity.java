@@ -45,6 +45,13 @@ public class QuizActivity extends AppCompatActivity {
         });
 
         questionTextView = (TextView) findViewById(R.id.question_text_view);
+        questionTextView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                currentIndex = (currentIndex + 1) % questionBank.length;
+                updateQuestion();
+            }
+        });
 
         trueButton = (Button) findViewById(R.id.true_button);
         trueButton.setOnClickListener(new View.OnClickListener() {
