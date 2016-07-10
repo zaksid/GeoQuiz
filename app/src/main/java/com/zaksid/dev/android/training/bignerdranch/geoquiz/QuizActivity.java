@@ -9,14 +9,15 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
 public class QuizActivity extends AppCompatActivity {
     private Button trueButton;
     private Button falseButton;
-    private Button nextButton;
-    private Button prevButton;
+    private ImageButton nextButton;
+    private ImageButton prevButton;
     private TextView questionTextView;
 
     private Question[] questionBank = new Question[]{
@@ -70,7 +71,7 @@ public class QuizActivity extends AppCompatActivity {
             }
         });
 
-        nextButton = (Button) findViewById(R.id.next_button);
+        nextButton = (ImageButton) findViewById(R.id.next_button);
         nextButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -79,7 +80,7 @@ public class QuizActivity extends AppCompatActivity {
             }
         });
 
-        prevButton = (Button) findViewById(R.id.prev_button);
+        prevButton = (ImageButton) findViewById(R.id.prev_button);
         prevButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
