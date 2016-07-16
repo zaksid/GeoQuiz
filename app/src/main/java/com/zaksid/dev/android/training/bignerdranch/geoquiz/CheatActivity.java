@@ -17,7 +17,10 @@ public class CheatActivity extends AppCompatActivity {
     public final static String EXTRA_ANSWER_SHOWN =
             "com.zaksid.dev.android.training.bignerdranch.geoquiz.answer_shown";
 
+    private final static String KEY_ANSWER_SHOWN = "isAnswerShown";
+
     private boolean isAnswerTrue;
+    private boolean isAnswerShown;
 
     private TextView answerTextView;
     private Button showAnswer;
@@ -42,6 +45,20 @@ public class CheatActivity extends AppCompatActivity {
 
         answerTextView = (TextView) findViewById(R.id.answer_text_view);
 
+
+        if (savedInstanceState != null) {
+            isAnswerShown = savedInstanceState.getBoolean(KEY_ANSWER_SHOWN, false);
+            setAnswerShownResult(isAnswerShown);
+        }
+
+        if (answerTextView != null && isAnswerShown) {
+            if (isAnswerTrue) {
+                answerTextView.setText(R.string.true_button);
+            } else {
+                answerTextView.setText(R.string.false_button);
+            }
+        }
+
         showAnswer = (Button) findViewById(R.id.show_answer_button);
         showAnswer.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -51,14 +68,22 @@ public class CheatActivity extends AppCompatActivity {
                 } else {
                     answerTextView.setText(R.string.false_button);
                 }
+
                 setAnswerShownResult(true);
             }
         });
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putBoolean(KEY_ANSWER_SHOWN, isAnswerShown);
     }
 
     private void setAnswerShownResult(boolean isAnswerShown) {
         Intent data = new Intent();
         data.putExtra(EXTRA_ANSWER_SHOWN, isAnswerShown);
         setResult(RESULT_OK, data);
+        this.isAnswerShown = isAnswerShown;
     }
 }
