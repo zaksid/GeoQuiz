@@ -1,10 +1,14 @@
 package com.zaksid.dev.android.training.bignerdranch.geoquiz;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.view.ViewAnimationUtils;
 import android.widget.Button;
 import android.widget.TextView;
 
@@ -18,6 +22,7 @@ public class CheatActivity extends AppCompatActivity {
             "com.zaksid.dev.android.training.bignerdranch.geoquiz.answer_shown";
 
     private final static String KEY_ANSWER_SHOWN = "isAnswerShown";
+    private final static String KEY_SHOW_ANSWER_VISIBILITY = "showAnswer visibility";
 
     private boolean isAnswerTrue;
     private boolean isAnswerShown;
@@ -44,11 +49,12 @@ public class CheatActivity extends AppCompatActivity {
         isAnswerTrue = getIntent().getBooleanExtra(EXTRA_ANSWER_IS_TRUE, false);
 
         answerTextView = (TextView) findViewById(R.id.answer_text_view);
-
+        showAnswer = (Button) findViewById(R.id.show_answer_button);
 
         if (savedInstanceState != null) {
             isAnswerShown = savedInstanceState.getBoolean(KEY_ANSWER_SHOWN, false);
             setAnswerShownResult(isAnswerShown);
+            showAnswer.setVisibility(savedInstanceState.getInt(KEY_SHOW_ANSWER_VISIBILITY, View.VISIBLE));
         }
 
         if (answerTextView != null && isAnswerShown) {
@@ -59,7 +65,6 @@ public class CheatActivity extends AppCompatActivity {
             }
         }
 
-        showAnswer = (Button) findViewById(R.id.show_answer_button);
         showAnswer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -70,6 +75,25 @@ public class CheatActivity extends AppCompatActivity {
                 }
 
                 setAnswerShownResult(true);
+
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    int cx = showAnswer.getWidth() / 2;
+                    int cy = showAnswer.getHeight() / 2;
+                    float radius = showAnswer.getWidth();
+                    Animator anim = ViewAnimationUtils.createCircularReveal(showAnswer, cx, cy, radius, 0);
+                    anim.addListener(new AnimatorListenerAdapter() {
+                        @Override
+                        public void onAnimationEnd(Animator animation) {
+                            super.onAnimationEnd(animation);
+                            answerTextView.setVisibility(View.VISIBLE);
+                            showAnswer.setVisibility(View.INVISIBLE);
+                        }
+                    });
+                    anim.start();
+                } else {
+                    answerTextView.setVisibility(View.VISIBLE);
+                    showAnswer.setVisibility(View.INVISIBLE);
+                }
             }
         });
     }
@@ -78,6 +102,7 @@ public class CheatActivity extends AppCompatActivity {
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putBoolean(KEY_ANSWER_SHOWN, isAnswerShown);
+        outState.putInt(KEY_SHOW_ANSWER_VISIBILITY, showAnswer.getVisibility());
     }
 
     private void setAnswerShownResult(boolean isAnswerShown) {
